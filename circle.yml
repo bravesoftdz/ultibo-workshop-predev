@@ -1,0 +1,19 @@
+version: 2
+executorType: docker
+containerInfo:
+  - image: markfirmware/ultibo-bash-v3
+stages:
+  build:
+    workDir: ~/ultibo-workshop-predev
+    steps:
+      - type: checkout
+      - name: Bootstrap
+        type: shell
+        command: source bootstrap.sh.source
+      - name: Build and test
+        type: shell
+        command: u build
+      - name: Save artifacts
+        type: artifacts-store
+        path: artifacts
+        destination: ultibo-workshop

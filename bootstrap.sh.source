@@ -1,0 +1,15 @@
+if [[ $USUBSYSTEM == "" ]]
+then
+    export USUBSYSTEM=$(cd $(dirname "$BASH_SOURCE") && pwd)/usubsystem
+    PATH="$USUBSYSTEM:$PATH"
+    echo "export USUBSYSTEM=$USUBSYSTEM"
+    echo PATH updated
+fi
+
+(mkdir -p $USUBSYSTEM/obj \
+ && stockfpc -l- -v0ewn usubsystem/u.lpr -FEusubsystem/obj \
+ && mv usubsystem/obj/u usubsystem \
+ && u bootstrap \
+) \
+  \
+ |& grep -v 'usr/bin/ld: warning: .*link.res contains output sections; did you forget -T?'
