@@ -12,7 +12,7 @@ stages:
         command: source bootstrap.sh.source
       - name: Build and test
         type: shell
-        command: u build
+        command: echo $PATH && ls -lt usubsystem && u build
       - name: Save artifacts
         type: artifacts-store
         path: artifacts
