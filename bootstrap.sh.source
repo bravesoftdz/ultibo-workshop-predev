@@ -14,7 +14,7 @@ fi
 ls -lt ~/ultibo-workshop-predev/usubsystem/stockfpc
 
 (mkdir -p $USUBSYSTEM/obj \
- && stockfpc -l- -v0ewn usubsystem/u.lpr -FEusubsystem/obj \
+ && stockfpc -l- -v0ewn -FEusubsystem/obj usubsystem/u.lpr \
  && mv usubsystem/obj/u usubsystem \
  && u bootstrap \
 ) \
