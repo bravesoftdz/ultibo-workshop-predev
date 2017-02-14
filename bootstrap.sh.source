@@ -11,6 +11,8 @@ then
     echo $PATH
 fi
 
+ls -lt ~/ultibo-workshop-predev/usubsystem/stockfpc
+
 (mkdir -p $USUBSYSTEM/obj \
  && stockfpc -l- -v0ewn usubsystem/u.lpr -FEusubsystem/obj \
  && mv usubsystem/obj/u usubsystem \
