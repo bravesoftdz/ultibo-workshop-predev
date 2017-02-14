@@ -2,6 +2,10 @@ if [[ $USUBSYSTEM == "" ]]
 then
     export USUBSYSTEM=$(cd $(dirname "$BASH_SOURCE") && pwd)/usubsystem
     PATH="$USUBSYSTEM:$PATH"
+    if [[ $(which fpc) == "" ]]
+    then
+        PATH="$(cd $(dirname "$BASH_SOURCE") && pwd)/usubsystem/docker-proxies:$PATH"
+    fi
     echo "export USUBSYSTEM=$USUBSYSTEM"
     echo PATH updated
 fi

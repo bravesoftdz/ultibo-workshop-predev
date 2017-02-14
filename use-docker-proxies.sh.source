@@ -1,2 +1,0 @@
-USUBSYSTEM=$(cd $(dirname "$BASH_SOURCE") && pwd)/usubsystem
-PATH="$USUBSYSTEM/docker-proxies:$PATH"
