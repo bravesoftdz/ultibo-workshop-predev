@@ -8,6 +8,7 @@ then
     fi
     echo "export USUBSYSTEM=$USUBSYSTEM"
     echo PATH updated
+    echo $PATH
 fi
 
 (mkdir -p $USUBSYSTEM/obj \
