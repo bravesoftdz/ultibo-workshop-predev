@@ -1,4 +1,4 @@
 #/bin/bash
 set -x
 export PATH=/usr/bin:$PATH
-fpc "$*"
+fpc $*
