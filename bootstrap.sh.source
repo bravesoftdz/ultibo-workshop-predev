@@ -8,10 +8,7 @@ then
     fi
     echo "export USUBSYSTEM=$USUBSYSTEM"
     echo PATH updated
-    echo $PATH 
 fi
-
-ls -lt ~/ultibo-workshop-predev/usubsystem/stockfpc
 
 (mkdir -p $USUBSYSTEM/obj \
  && stockfpc -l- -v0ewn -FEusubsystem/obj usubsystem/u.lpr \

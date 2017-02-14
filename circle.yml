@@ -12,7 +12,7 @@ stages:
         command: source bootstrap.sh.source
       - name: Build and test
         type: shell
-        command: echo $PATH && ls -lt usubsystem && u build
+        command: export PATH=~/ultibo-workshop/usubsystem:$PATH && u build
       - name: Save artifacts
         type: artifacts-store
         path: artifacts
