@@ -6,12 +6,13 @@ then
     then
         PATH="$(cd $(dirname "$BASH_SOURCE") && pwd)/usubsystem/docker-proxies:$PATH"
     fi
-    echo "export USUBSYSTEM=$USUBSYSTEM"
-    echo PATH updated
+#   echo "export USUBSYSTEM=$USUBSYSTEM"
+#   echo PATH updated
 fi
-set -x
+
 (mkdir -p $USUBSYSTEM/obj \
- && fpc -l- -v0ewn -FEusubsystem/obj usubsystem/u.lpr \
+ && fpc '-Fu/root/ultibo/core/fpc/lib/fpc/3.1.1/units/x86_64-linux/*' \
+        -l- -v0ewn -FEusubsystem/obj usubsystem/u.lpr \
  && mv usubsystem/obj/u usubsystem \
  && u bootstrap \
 ) \
