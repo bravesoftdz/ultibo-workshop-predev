@@ -9,7 +9,7 @@ then
     echo "export USUBSYSTEM=$USUBSYSTEM"
     echo PATH updated
 fi
-
+set -x
 (mkdir -p $USUBSYSTEM/obj \
  && fpc -l- -v0ewn -FEusubsystem/obj usubsystem/u.lpr \
  && mv usubsystem/obj/u usubsystem \
