@@ -1,4 +1,3 @@
 #/bin/bash
 
-PROXIES=$(cd $(dirname "$0") && pwd)
-$PROXIES/call-ultibo-docker.sh fpc $*
+call-ultibo-docker.sh fpc $*

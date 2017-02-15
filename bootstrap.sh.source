@@ -11,7 +11,7 @@ then
 fi
 
 (mkdir -p $USUBSYSTEM/obj \
- && stockfpc -l- -v0ewn -FEusubsystem/obj usubsystem/u.lpr \
+ && fpc -l- -v0ewn -FEusubsystem/obj usubsystem/u.lpr \
  && mv usubsystem/obj/u usubsystem \
  && u bootstrap \
 ) \

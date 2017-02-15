@@ -1,5 +1,0 @@
-#/bin/bash
-
-PROXIES=$(cd $(dirname "$0") && pwd)
-HIDEULTIBOPATH=/usr/bin:\$PATH
-$PROXIES/call-ultibo-docker.sh "PATH=\"$HIDEULTIBOPATH\" fpc $*"
