@@ -1,3 +1,4 @@
+set -x
 if [[ $USUBSYSTEM == "" ]]
 then
     export USUBSYSTEM=$(cd $(dirname "$BASH_SOURCE") && pwd)/usubsystem
