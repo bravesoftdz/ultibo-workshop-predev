@@ -123,7 +123,7 @@ begin
  RecreateDir('artifacts');
 
  Parts:=TStringList.Create;
- Parts.Add('ufpc');
+ Parts.Add('fpc');
  Parts.Add('-d' + Symbol);
  Parts.Add('-l-');
  Parts.Add('-v0ewn');
