@@ -1,7 +1,7 @@
 version: 2
 executorType: docker
 containerInfo:
-  - image: markfirmware/ultibo-docker-x64-v2
+  - image: markfirmware/ultibo-docker2-x64@sha256:7207b75950d72e5dc1d2220df85655fa723f772dedc085025f1829ebea69e913
 stages:
   build:
     workDir: ~/ultibo-workshop-predev

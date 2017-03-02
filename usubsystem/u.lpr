@@ -2,7 +2,7 @@ program USubsystemProgram;
 {$mode delphi} {$h+}
 
 uses
- Classes,Process,SysUtils;
+ Classes,FpSock,Process,SSockets,SysUtils;
 
 type
  TArrayOfString = array of String;
@@ -17,7 +17,12 @@ const
  UltiboInstallation='/root/ultibo/core/fpc';
 
 var
+ FrameNumber:Integer;
  Qemu:TTargetPlatform;
+// QemuMonitor:TTcpChannel;
+ QemuProcess:TProcess;
+ QemuStopping:Boolean;
+// SerialChannels:array [0..3] of TTcpChannel;
 
 procedure Log(Message:String);
 begin
@@ -109,6 +114,33 @@ begin
  finally
   S.Free;
  end;
+end;
+
+procedure StartQemu;
+var
+ I:Integer;
+ Parts:TStringList;
+ Command:String;
+begin
+ QemuProcess:=TProcess.Create(nil);
+{
+ Qemu.(["qemu-system-arm",
+                                 "-M", "versatilepb",
+                                 "-cpu", "cortex-a8",
+                                 "-kernel", "kernel.bin",
+                                 "-m", "1024M",
+                                 "-usb",
+                                 "-display", "none",
+                                 "-monitor", "tcp:127.0.0.1:38004,server",
+                                 "-serial", "tcp:127.0.0.1:38000,server",
+                                 "-serial", "tcp:127.0.0.1:38001,server",
+                                 "-serial", "tcp:127.0.0.1:38002,server",
+                                 "-serial", "tcp:127.0.0.1:38003,server"],
+
+
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE)
+}
 end;
 
 procedure TTargetPlatform.Build(ProgramFile,BuildDir:String);
@@ -259,3 +291,119 @@ function test-qemu-target {
             rm $screen
     convert-frames
     file run-qemu-output/*
+
+
+
+outputfolder = 'run-qemu-output'
+class TcpChannel:
+    def __init__ (self, name, port):
+#       print name, port
+        self.name = name
+        self.port = port
+        self.linebuffer = ""
+        self.socket = socket.socket ()
+        opened = False
+        while not opened:
+            try:
+                self.socket.connect (('127.0.0.1', self.port))
+                opened = True
+            except:
+                sleep (0.1)
+        self.logfile = open ('{}/{}.txt'.format (outputfolder, self.name), 'a')
+    def writeline (self, line, echo=False):
+#       print '{}>>>>{}'.format (self.name, line)
+        if echo:
+            self.logfile.write ('{}>>>>{}\n'.format (self.name, line))
+        self.socket.sendall (line + '\n')
+    def writekeyboardline (self, line, echo=False):
+#       print '{}>>>>{}'.format (self.name, line)
+        if echo:
+            self.logfile.write ('{}>>>>{}\n'.format (self.name, line))
+        self.socket.sendall (line + '\r')
+    def drain (self):
+#       print 'drain {}'.format (self.name)
+            while ([], [], []) != select.select ([self.socket], [], [], 0):
+                try:
+                    data = self.socket.recv (4096)
+                except:
+                    break
+                if data == "":
+                    break
+                self.logfile.write (data)
+                for c in data:
+                    if c == '\r':
+                        pass
+                    elif c == '\n':
+#                       print '{}<<<<{}'.format(self.name, self.linebuffer)
+                        index = self.linebuffer.find ('program stop')
+                        if index != -1:
+#                           print self.linebuffer
+                            global stopping
+                            stopping = True
+                            monitor.writeline ('quit')
+                        index = self.linebuffer.find ('frame buffer')
+                        if index != -1:
+#                           print self.linebuffer
+                            fb = parse.parse ('{} frame buffer at {address} size {width:d}x{height:d}x{depth:d}', self.linebuffer)
+                            if fb:
+                                framecapture (fb.named ['address'], fb.named ['width'], fb.named ['height'], fb.named ['depth'])
+                        self.linebuffer = ""
+                    else:
+                        self.linebuffer = self.linebuffer + c
+                sleep (0.001, self.name)
+    def finishquit (self, process):
+        while process.returncode == None:
+            sleep (0.001, 'finishquit ' + self.name)
+            process.poll ()
+            if ([], [], []) != select.select ([self.socket], [], [], 0):
+                sys.stdout.write (self.socket.recv (4096))
+    def close (self):
+        self.logfile.close ()
+        self.socket.close ()
+
+procedure DrainAll;
+var
+ I:Integer;
+begin
+ for I:=Low(SerialChannels) to High(SerialChannels) do
+  SerialChannels[I].Drain;
+ QemuMonitor.Drain;
+end;
+
+procedure FrameCapture(Address,Width,Height,Depth:Integer);
+begin
+ print 'framecapture', address, width, height, depth
+ monitor.writeline ('memsave {} {} {}/frame-{:02d}-{}x{}x{}.fb'.format (address, width * height * depth, outputfolder, framenumber, width, height, depth))
+ Inc(FrameNumber);
+end;
+
+procedure QemuWork;
+begin
+ QemuStopping:=False;
+ while not QemuStopping do
+  Drainall('not stopping');
+ Drainall ('stopping');
+ Sleep(1*1000);
+ Drainall ('one more before quit');
+ QemuMonitor.FinishQuit(QemuProcess);
+end;
+
+RunQemuTest;
+begin
+ RecreateDir(QemuOutputFolder);
+ StartQemu;
+ FrameNumber:=1;
+ QemuMonitor:=TcpChannel.Create('qemumonitor', 38004);
+ for I:=Low(SerialChannels) to High(SerialChannels) do
+  SerialChannels[I]:=TcpChannel.Create(Format('serial%d',[38000 + I]));
+ QemuWork;
+ QemuMonitor.Close;
+ for I:=Low(SerialChannels) to High(SerialChannels) do
+  SerialChannels[I].Close;
+end;
+
+#screennumber = 1
+#def screendump ():
+#    global screennumber
+#    monitor.writeline ('screendump {}/screen-{:02d}.ppm'.format (outputfolder, screennumber))
+#    screennumber = screennumber + 1
