@@ -10,8 +10,7 @@ then
 #   echo PATH updated
 fi
 
-uname -m | grep -iq '^arm.*'
-if [[ $? == 0 ]]
+if [[ $(uname -m) == *arm* ]]
 then
     CPU=arm
 else
