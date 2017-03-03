@@ -19,6 +19,7 @@ const
 var
  FrameNumber:Integer;
  Qemu:TTargetPlatform;
+ Rpi2:TTargetPlatform;
 // QemuMonitor:TTcpChannel;
  QemuProcess:TProcess;
  QemuStopping:Boolean;
@@ -204,12 +205,13 @@ begin
   (['-CpARMV7A','-WpQEMUVPB'],'qemuvpb.cfg','TARGET_QEMUARM7A');
 // RPi:=TTargetPlatform.Create
 //  (['-CpARMV6','-WpRPIB'],'rpi.cfg','TARGET_RPI_INCLUDING_RPI0');
-//RPi2:=TTargetPlatform.Create
-//  (['-CpARMV7A','-WpRPI2B'],'rpi2.cfg','TARGET_RPI2_INCLUDING_RPI3');
+ RPi2:=TTargetPlatform.Create
+  (['-CpARMV7A','-WpRPI2B'],'rpi2.cfg','TARGET_RPI2_INCLUDING_RPI3');
 // RPi3:=TTargetPlatform.Create
 //  (['-CpARMV7A','-WpRPI3B'],'rpi3.cfg','TARGET_RPI3');
 
 Qemu.Build('projects/projectone/projectone.lpr','obj');
+//Rpi2.Build('projects/projectone/projectone.lpr','obj');
 //TestProcess;
 end;
 

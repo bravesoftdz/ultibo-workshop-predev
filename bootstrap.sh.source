@@ -10,9 +10,17 @@ then
 #   echo PATH updated
 fi
 
+uname -m | grep -iq '^arm.*'
+if [[ $? == 0 ]]
+then
+    CPU=arm
+else
+    CPU=x86_64
+fi
+
 set -x
 (mkdir -p $USUBSYSTEM/obj \
- && fpc '-Fu/root/ultibo/core/fpc/lib/fpc/3.1.1/units/x86_64-linux/*' \
+ && fpc "-Fu/root/ultibo/core/fpc/lib/fpc/3.1.1/units/$CPU-linux/*" \
         -l- -v0ewn -FEusubsystem/obj usubsystem/u.lpr \
  && mv usubsystem/obj/u usubsystem \
  && u bootstrap \
