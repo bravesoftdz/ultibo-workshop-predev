@@ -151,7 +151,7 @@ var
  Parts:TStringList;
  Command:String;
 begin
- Log(Format('Build %s into %s',[ProgramFile,BuildDir]));
+ Log(Format('Build %s as %s',[ProgramFile,Symbol]));
  RecreateDir(BuildDir);
  RecreateDir('artifacts');
 
@@ -211,7 +211,7 @@ begin
 //  (['-CpARMV7A','-WpRPI3B'],'rpi3.cfg','TARGET_RPI3');
 
 Qemu.Build('projects/projectone/projectone.lpr','obj');
-//Rpi2.Build('projects/projectone/projectone.lpr','obj');
+Rpi2.Build('projects/projectone/projectone.lpr','obj');
 //TestProcess;
 end;
 

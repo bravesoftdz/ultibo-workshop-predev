@@ -7,12 +7,9 @@ stages:
     workDir: ~/ultibo-workshop-predev
     steps:
       - type: checkout
-      - name: Bootstrap
-        type: shell
-        command: source bootstrap.sh.source
       - name: Build and test
         type: shell
-        command: export PATH=~/ultibo-workshop-predev/usubsystem:$PATH && u build
+        command: source bootstrap.sh.source && u build
       - name: Save artifacts
         type: artifacts-store
         path: artifacts
