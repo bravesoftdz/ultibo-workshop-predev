@@ -7,9 +7,10 @@ uses
 type
  TArrayOfString = array of String;
  TTargetPlatform = class
+  KernelName:String;
   Options:array of String;
   Config,Symbol:String;
-  constructor Create(Options:array of String;Config,Symbol:String);
+  constructor Create(KernelName:String;Options:array of String;Config,Symbol:String);
   procedure Build(ProgramFile,BuildDir:String);
  end;
 
@@ -44,13 +45,14 @@ begin
  Result:='';
 end;
 
-constructor TTargetPlatform.Create(Options:array of String;Config,Symbol:String);
+constructor TTargetPlatform.Create(KernelName:String;Options:array of String;Config,Symbol:String);
 var
  I:Integer;
 begin
  SetLength(self.Options,Length(Options));
  for I:=Low(Options) to High(Options) do
   self.Options[I]:=Options[I];
+ self.KernelName:=KernelName;
  self.Config:=Config;
  self.Symbol:=Symbol;
 end;
@@ -153,7 +155,6 @@ var
 begin
  Log(Format('Build %s as %s',[ProgramFile,Symbol]));
  RecreateDir(BuildDir);
- RecreateDir('artifacts');
 
  Parts:=TStringList.Create;
  Parts.Add('fpc');
@@ -185,7 +186,7 @@ begin
 //  Log(Fpc.Parameters[I]);
  Fpc.Execute;
  if Fpc.ExitStatus = 0 then
-  CopyFile('kernel.bin','artifacts/kernel.bin')
+  CopyFile(KernelName,Path(['artifacts',KernelName]))
  else
   Log(Format('exit status %d',[Fpc.ExitStatus]));
  Fpc.Free;
@@ -201,14 +202,15 @@ end;
 
 procedure Build;
 begin
+ RecreateDir('artifacts');
  Qemu:=TTargetPlatform.Create
-  (['-CpARMV7A','-WpQEMUVPB'],'qemuvpb.cfg','TARGET_QEMUARM7A');
+  ('kernel.bin',['-CpARMV7A','-WpQEMUVPB'],'qemuvpb.cfg','TARGET_QEMUARM7A');
 // RPi:=TTargetPlatform.Create
-//  (['-CpARMV6','-WpRPIB'],'rpi.cfg','TARGET_RPI_INCLUDING_RPI0');
+//  ('kernel.img',['-CpARMV6','-WpRPIB'],'rpi.cfg','TARGET_RPI_INCLUDING_RPI0');
  RPi2:=TTargetPlatform.Create
-  (['-CpARMV7A','-WpRPI2B'],'rpi2.cfg','TARGET_RPI2_INCLUDING_RPI3');
+  ('kernel7.img',['-CpARMV7A','-WpRPI2B'],'rpi2.cfg','TARGET_RPI2_INCLUDING_RPI3');
 // RPi3:=TTargetPlatform.Create
-//  (['-CpARMV7A','-WpRPI3B'],'rpi3.cfg','TARGET_RPI3');
+//  ('kernel7.img',['-CpARMV7A','-WpRPI3B'],'rpi3.cfg','TARGET_RPI3');
 
 Qemu.Build('projects/projectone/projectone.lpr','obj');
 Rpi2.Build('projects/projectone/projectone.lpr','obj');
