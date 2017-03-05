@@ -1,22 +1,14 @@
 program ProjectOne;
 uses
-// GlobalConst,
-// GlobalTypes,
- Threads,
-// Console,
-// Framebuffer,
+// Threads,
  BCM2836,
  BCM2709,
- Crt;
-
-//uses Crt,SysUtils;
-//begin
-//WriteLn('ProjectOne');
-//while True do
-// Sleep(1*1000);
-//end.
+ Crt,
+ SysUtils;
 
 begin
  WriteLn('ProjectOne');
- ThreadHalt(0);
+// ThreadHalt(0);
+ while True do
+  Sleep(1*1000);
 end.
