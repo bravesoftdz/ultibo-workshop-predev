@@ -6,22 +6,22 @@ uses
  Console,
  Framebuffer,
  BCM2836,
- BCM2709;
+ BCM2709,
+ Crt;
 
 //uses Crt,SysUtils;
 //begin
-//Write('ProjectOne');
+//WriteLn('ProjectOne');
 //while True do
 // Sleep(1*1000);
 //end.
 
-//{$mode objfpc}{$H+}
-
-var
- WindowHandle:TWindowHandle;
+//var
+// WindowHandle:TWindowHandle;
 
 begin
- WindowHandle:=ConsoleWindowCreate(ConsoleDeviceGetDefault,CONSOLE_POSITION_FULL,True);
- ConsoleWindowWriteLn(WindowHandle,'Hello Ultibo!');
+ WriteLn('ProjectOne');
+// WindowHandle:=ConsoleWindowCreate(ConsoleDeviceGetDefault,CONSOLE_POSITION_FULL,True);
+// ConsoleWindowWriteLn(WindowHandle,'Hello Ultibo!');
  ThreadHalt(0);
 end.
